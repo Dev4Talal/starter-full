@@ -1,37 +1,48 @@
-import { AnimatePresence } from 'framer-motion'
-import { useRouter } from 'next/router'
+import { AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
+import "../styles/globals.css";
+import * as gtag from "../lib/gtag";
+
+import { DefaultSeo } from "next-seo";
+
+import SEO from "../next-seo.config";
+
+import GoogleTagManager from "../components/GoogleTagManager";
+// import FacebookPixel from '../components/FacebookPixel'
+
+import { appWithTranslation } from "next-i18next";
 
 function handleExitComplete() {
-  if (typeof window !== 'undefined') {
-    window.scrollTo({ top: 0 })
+  if (typeof window !== "undefined") {
+    window.scrollTo({ top: 0 });
   }
 }
 
 function MyApp({ Component, pageProps }) {
-  const router = useRouter()
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageview(url);
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
-      <AnimatePresence exitBeforeEnter onExitComplete={handleExitComplete}>
-        <Component {...pageProps} key={router.route} />
-      </AnimatePresence>
-      <style>
-        {`
-        body {
-          padding: 0;
-          margin: 0;
-          background: #f9fbf8;
-        }
-
-        * {
-          box-sizing: border-box;
-          font-family: Helvetica, sans-serif;
-          font-weight: 900;
-          color: #222;
-        }
-      `}
-      </style>
+      <DefaultSeo {...SEO} />
+      <GoogleTagManager>
+        {/* <FacebookPixel> */}
+        <AnimatePresence exitBeforeEnter onExitComplete={handleExitComplete}>
+          <Component {...pageProps} key={router.route} />
+        </AnimatePresence>
+        {/* </FacebookPixel> */}
+      </GoogleTagManager>
     </>
-  )
+  );
 }
 
-export default MyApp
+export default appWithTranslation(MyApp);
