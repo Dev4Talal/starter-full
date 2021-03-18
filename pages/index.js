@@ -40,7 +40,7 @@ export default function Home() {
       />
       <Header />
       <Body>
-
+        
       </Body>
       <Footer />
     </div>

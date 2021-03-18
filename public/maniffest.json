@@ -4,7 +4,7 @@
     "description": "a wide range of industrial and safety gloves",
     "icons": [
       {
-        "src": "/static/logoWeb.png",
+        "src": "/static/pwa.png",
         "sizes": "192x192",
         "type": "image/png"
       }
